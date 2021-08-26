@@ -32,3 +32,6 @@
 *.app
 
 .vs/
+Release/
+Debug/
+x64/
