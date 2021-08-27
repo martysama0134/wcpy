@@ -8,13 +8,17 @@ namespace wcpy
 {
 	
 class Data {
-private:
-	PyObject* m_v{};
 
 public:
+	// aliases
+	using Type = PyObject*;
+
+	// constructor
 	Data() = delete;
-	Data(int v) : m_v((PyObject*)v) {};
-	Data(PyObject* v) : m_v(v) {};
+	Data(int obj) : mObj((PyObject*)obj) {};
+	Data(PyObject* obj) : mObj(obj) {};
+
+	// destructor
 	~Data() {
 		Reset();
 	}
@@ -25,22 +29,35 @@ public:
 
 	// move
 	Data(Data&& data) {
-		this->m_v = data.m_v;
-		data.m_v = nullptr;
+		this->mObj = data.mObj;
+		data.mObj = nullptr;
 	};
 	Data& operator=(Data& data) {
 		Reset();
-		this->m_v = data.m_v;
-		data.m_v = nullptr;
+		this->mObj = data.mObj;
+		data.mObj = nullptr;
 	};
 
+	// methods
 	void Reset() {
-		if (m_v) {
-			Py_DECREF(m_v);
-			m_v = nullptr;
+		if (mObj) {
+			Py_DECREF(mObj);
+			mObj = nullptr;
 		}
 	}
 
+	// access
+	//! @brief *ptr
+	Data::Type operator*() const { return mObj; }
+	//! @brief if (!ptr)
+	bool operator!() const { return !mObj; }
+	//! @brief ptr->elem
+	Data::Type operator->() const { return mObj; }
+	//! @brief if (ptr)
+	explicit operator bool() const { return mObj; }
+
+private:
+	Data::Type mObj{nullptr};
 }; // class Data
 
 class App
