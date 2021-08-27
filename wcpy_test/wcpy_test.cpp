@@ -52,9 +52,9 @@ int main()
         auto app = wcpy::App();
         app.RunString("from time import time,ctime\n"
             "print('Today is', ctime(time()))\n");
+#if PY_MAJOR_VERSION >= 3
         //auto * mod = PyModule_New("CosModule");
         //PyModule_AddFunctions(mod, CosMethods);
-#if PY_MAJOR_VERSION >= 3
         PyInit_CosModule();
         PyRun_SimpleString(
             "import importlib.abc\n" \
@@ -72,12 +72,12 @@ int main()
             "\n" \
             "\n" \
             "sys.meta_path.append(Finder())\n" \
+            "import CosModule\nprint(CosModule.CosFunc(1.0))\n" \
         );
 #else
-        //PyModule_AddFunctions(mod, CosMethods);
         Py_InitModule("CosModule", CosMethods);
+        app.RunString("import CosModule\nprint(CosModule.CosFunc(1.0))");
 #endif
-        app.RunString("import CosModule\nprint(CosModule.cos_func(1.0))");
     }
     puts("stop");
 }
