@@ -49,35 +49,17 @@ int main()
 {
     puts("start"); 
     {
-        auto app = wcpy::App();
-        app.RunString("from time import time,ctime\n"
-            "print('Today is', ctime(time()))\n");
 #if PY_MAJOR_VERSION >= 3
-        //auto * mod = PyModule_New("CosModule");
-        //PyModule_AddFunctions(mod, CosMethods);
-        PyInit_CosModule();
-        PyRun_SimpleString(
-            "import importlib.abc\n" \
-            "import importlib.machinery\n" \
-            "import sys\n" \
-            "\n" \
-            "\n" \
-            "class Finder(importlib.abc.MetaPathFinder):\n" \
-            "    def find_spec(self, fullname, path, target=None):\n" \
-            "        if fullname in sys.builtin_module_names:\n" \
-            "            return importlib.machinery.ModuleSpec(\n" \
-            "                fullname,\n" \
-            "                importlib.machinery.BuiltinImporter,\n" \
-            "            )\n" \
-            "\n" \
-            "\n" \
-            "sys.meta_path.append(Finder())\n" \
-            "import CosModule\nprint(CosModule.CosFunc(1.0))\n" \
-        );
+        PyImport_AppendInittab("CosModule", &PyInit_CosModule);
+        auto app = wcpy::App();
+        app.RunString("import CosModule\nprint(CosModule.CosFunc(1.0))");
 #else
+        auto app = wcpy::App();
         Py_InitModule("CosModule", CosMethods);
         app.RunString("import CosModule\nprint(CosModule.CosFunc(1.0))");
 #endif
+        app.RunString("from time import time,ctime\n"
+            "print('Today is', ctime(time()))\n");
     }
     puts("stop");
 }
