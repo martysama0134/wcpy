@@ -49,18 +49,23 @@ int main()
 {
     puts("start"); 
     {
-#if PY_MAJOR_VERSION >= 3
+        // testing wcpy::App
+        #if PY_MAJOR_VERSION >= 3
         auto app = wcpy::App(false); //should not be initialized if there are custom modules to load
         app.InitModule("CosModule", &PyInit_CosModule);
         app.Init(); //first called after custom module
         app.RunString("import CosModule\nprint(CosModule.CosFunc(1.0))");
-#else
+        #else
         auto app = wcpy::App();
         app.InitModule("CosModule", CosMethods);
         app.RunString("import CosModule\nprint(CosModule.CosFunc(1.0))");
-#endif
+        #endif
         app.RunString("from time import time,ctime\n"
             "print('Today is', ctime(time()))\n");
+
+        // testing wcpy::Data
+        wcpy::Data d = PyTuple_New(3);
+        wcpy::Data d2 = std::move(d);
     }
     puts("stop");
 }

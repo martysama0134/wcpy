@@ -6,6 +6,43 @@
 
 namespace wcpy
 {
+	
+class Data {
+private:
+	PyObject* m_v{};
+
+public:
+	Data() = delete;
+	Data(int v) : m_v((PyObject*)v) {};
+	Data(PyObject* v) : m_v(v) {};
+	~Data() {
+		Reset();
+	}
+
+	// copy
+	Data(const Data&) = delete;
+	Data& operator=(const Data&) = delete;
+
+	// move
+	Data(Data&& data) {
+		this->m_v = data.m_v;
+		data.m_v = nullptr;
+	};
+	Data& operator=(Data& data) {
+		Reset();
+		this->m_v = data.m_v;
+		data.m_v = nullptr;
+	};
+
+	void Reset() {
+		if (m_v) {
+			Py_DECREF(m_v);
+			m_v = nullptr;
+		}
+	}
+
+}; // class Data
+
 class App
 {
 public:
@@ -69,13 +106,14 @@ public:
 		return AddInt(GetModule(module), name, value);
 	}
 
-	static void RunString(const char* str) {
-		PyRun_SimpleString(str);
+	static int RunString(const char* str) {
+		return PyRun_SimpleString(str);
 	}
-	static void RunString(const std::string & str) {
-		RunString(str.c_str());
+	static int RunString(const std::string & str) {
+		return RunString(str.c_str());
 	}
-};
+}; // class App
+
 } // namespace wcpy
 
 
