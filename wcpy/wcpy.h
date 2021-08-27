@@ -9,8 +9,10 @@ namespace wcpy
 class App
 {
 public:
-	App() {
-		Init();
+	App(bool init = true) {
+		// embedded python3 modules should be imported before the initialization
+		if (init)
+			Init();
 	}
 	~App() {
 		Clear();
@@ -30,9 +32,16 @@ public:
 		return GetModule(str.c_str());
 	}
 
-	/*static PyObject * InitModule(const char * name, PyMethodDef * methods) {
+#if PY_MAJOR_VERSION >= 3
+	static int InitModule(const char * name, PyObject* (*initfunc)(void)) {
+		return PyImport_AppendInittab(name, initfunc);
+	}
+#else
+	static PyObject* InitModule(const char* name, PyMethodDef* methods) {
 		return Py_InitModule(name, methods);
-	}*/
+	}
+#endif
+
 	static int AddObject(PyObject * module, const char * name, PyObject * value) {
 		return PyModule_AddObject(module, name, value);
 	}

@@ -50,12 +50,13 @@ int main()
     puts("start"); 
     {
 #if PY_MAJOR_VERSION >= 3
-        PyImport_AppendInittab("CosModule", &PyInit_CosModule);
-        auto app = wcpy::App();
+        auto app = wcpy::App(false); //should not be initialized if there are custom modules to load
+        app.InitModule("CosModule", &PyInit_CosModule);
+        app.Init(); //first called after custom module
         app.RunString("import CosModule\nprint(CosModule.CosFunc(1.0))");
 #else
         auto app = wcpy::App();
-        Py_InitModule("CosModule", CosMethods);
+        app.InitModule("CosModule", CosMethods);
         app.RunString("import CosModule\nprint(CosModule.CosFunc(1.0))");
 #endif
         app.RunString("from time import time,ctime\n"
