@@ -17,7 +17,7 @@ public:
 	// constructor
 	Data() = default;
 	Data(int obj) { Assign(obj);  };
-	Data(PyObject* obj) { Assign(obj); };
+	Data(Data::Type obj) { Assign(obj); };
 
 	// destructor
 	~Data() {
@@ -47,14 +47,14 @@ public:
 		}
 	}
 
-	void Assign(PyObject * obj) {
+	void Assign(Data::Type obj) {
 		Reset();
 		mObj = obj;
 	}
 
 	void Assign(int obj) {
 		Reset();
-		mObj = (PyObject *)obj;
+		mObj = (Data::Type)obj;
 	}
 
 	// access
