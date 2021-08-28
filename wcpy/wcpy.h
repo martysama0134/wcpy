@@ -60,12 +60,18 @@ public:
 	// access
 	//! @brief *ptr
 	Data::Type operator*() const { return mObj; }
+	//! @brief &ptr
+	Data::Type * operator&() { return &mObj; }
 	//! @brief if (!ptr)
 	bool operator!() const { return !mObj; }
 	//! @brief ptr->elem
 	Data::Type operator->() const { return mObj; }
 	//! @brief if (ptr)
 	explicit operator bool() const { return mObj; }
+	#ifdef WCPY_DATA_ENABLE_IMPLICIT_CONVERSION
+	//! @brief implicit std::FILE ptr conversion
+	operator Data::Type () const { return mObj; }
+	#endif
 
 private:
 	Data::Type mObj{nullptr};

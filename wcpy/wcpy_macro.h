@@ -2,6 +2,8 @@
 #define __WCPY__WCPY_MACRO_H__
 #pragma once
 
+#define WCPY_DATA_ENABLE_IMPLICIT_CONVERSION
+
 #if PY_MAJOR_VERSION >= 3
 #define WCPY_GENERATE_PYTHON3_MODULE(name)			\
 	static PyModuleDef mod##name## = {				\
