@@ -24,26 +24,13 @@ static PyObject* CosModule_CosFunc(PyObject* self, PyObject* args)
 	return Py_BuildValue("f", answer);
 }
 
-static PyMethodDef CosMethods[] =
+static PyMethodDef CosModuleMethods[] =
 {
 	 {"CosFunc", CosModule_CosFunc, METH_VARARGS, "evaluate the cosine"},
 	 {NULL, NULL, 0, NULL}
 };
 
-#if PY_MAJOR_VERSION >= 3
-static struct PyModuleDef cModPyDem =
-{
-	PyModuleDef_HEAD_INIT,
-	"CosModule", "Some documentation",
-	-1,
-	CosMethods
-};
-
-PyMODINIT_FUNC PyInit_CosModule(void)
-{
-	return PyModule_Create(&cModPyDem);
-}
-#endif
+WCPY_GENERATE_PYTHON3_MODULE(CosModule);
 
 int main()
 {
@@ -52,12 +39,12 @@ int main()
 		// testing wcpy::App
 		#if PY_MAJOR_VERSION >= 3
 		auto app = wcpy::App(false); //should not be initialized if there are custom modules to load
-		app.InitModule("CosModule", &PyInit_CosModule);
+		WCPY_INIT_PYTHON_MODULE(CosModule); //app.InitModule("CosModule", &PyInit_CosModule);
 		app.Init(); //first called after custom module
 		app.RunString("import CosModule\nprint(CosModule.CosFunc(1.0))");
 		#else
 		auto app = wcpy::App();
-		app.InitModule("CosModule", CosMethods);
+		WCPY_INIT_PYTHON_MODULE(CosModule); //app.InitModule("CosModule", CosModuleMethods);
 		app.RunString("import CosModule\nprint(CosModule.CosFunc(1.0))");
 		#endif
 		app.RunString("from time import time,ctime\n"

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "wcpy_link.h"
+#include "wcpy_macro.h"
 
 namespace wcpy
 {
@@ -14,9 +15,9 @@ public:
 	using Type = PyObject*;
 
 	// constructor
-	Data() = delete;
-	Data(int obj) : mObj((PyObject*)obj) {};
-	Data(PyObject* obj) : mObj(obj) {};
+	Data() = default;
+	Data(int obj) { Assign(obj);  };
+	Data(PyObject* obj) { Assign(obj); };
 
 	// destructor
 	~Data() {
@@ -44,6 +45,16 @@ public:
 			Py_DECREF(mObj);
 			mObj = nullptr;
 		}
+	}
+
+	void Assign(PyObject * obj) {
+		Reset();
+		mObj = obj;
+	}
+
+	void Assign(int obj) {
+		Reset();
+		mObj = (PyObject *)obj;
 	}
 
 	// access
@@ -95,6 +106,22 @@ public:
 		return Py_InitModule(name, methods);
 	}
 #endif
+
+	static bool StringCheck(PyObject * v) {
+		#if PY_MAJOR_VERSION >= 3
+		return PyBytes_Check(v);
+		#else
+		return PyString_Check(v);
+		#endif
+	}
+
+	static char * StringAsString(PyObject * v) {
+		#if PY_MAJOR_VERSION >= 3
+		return PyBytes_AS_STRING(v);
+		#else
+		return PyBytes_AS_STRING(v);
+		#endif
+	}
 
 	static int AddObject(PyObject * module, const char * name, PyObject * value) {
 		return PyModule_AddObject(module, name, value);
