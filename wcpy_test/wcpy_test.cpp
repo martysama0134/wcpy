@@ -53,6 +53,8 @@ int main()
 		// testing wcpy::Data
 		wcpy::Data d = PyTuple_New(3);
 		wcpy::Data d2 = std::move(d);
+		wcpy::Data d3;
+		d3.Assign(PyTuple_New(3));
 	}
 	puts("stop");
 }
