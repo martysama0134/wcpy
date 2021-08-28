@@ -141,44 +141,44 @@ public:
 		Clear();
 	}
 
-	static void Init() {
+	static inline void Init() {
 		Py_Initialize();
 	}
-	static void Clear() {
+	static inline void Clear() {
 		Py_Finalize();
 	}
 
 #if PY_MAJOR_VERSION >= 3
-	static wcpy::Mem SetProgramName(char * name) {
+	static inline wcpy::Mem SetProgramName(char * name) {
 		auto v = Py_DecodeLocale(name, nullptr);
 		Py_SetProgramName(v);
 		return v;
 	}
 #else
-	static bool SetProgramName(char * name) {
+	static inline bool SetProgramName(char * name) {
 		Py_SetProgramName(name);
 		return (name);
 	}
 #endif
 
-	static PyObject * GetModule(const char * str) {
+	static inline PyObject * GetModule(const char * str) {
 		return PyImport_ImportModule(str);
 	}
-	static PyObject * GetModule(const std::string & str) {
+	static inline PyObject * GetModule(const std::string & str) {
 		return GetModule(str.c_str());
 	}
 
 #if PY_MAJOR_VERSION >= 3
-	static int InitModule(const char * name, PyObject* (*initfunc)(void)) {
+	static inline int InitModule(const char * name, PyObject* (*initfunc)(void)) {
 		return PyImport_AppendInittab(name, initfunc);
 	}
 #else
-	static PyObject* InitModule(const char* name, PyMethodDef* methods) {
+	static inline PyObject* InitModule(const char* name, PyMethodDef* methods) {
 		return Py_InitModule(name, methods);
 	}
 #endif
 
-	static bool StringCheck(PyObject * v) {
+	static inline bool StringCheck(PyObject * v) {
 		#if PY_MAJOR_VERSION >= 3
 		return PyBytes_Check(v);
 		#else
@@ -186,7 +186,7 @@ public:
 		#endif
 	}
 
-	static char * StringAsString(PyObject * v) {
+	static inline char * StringAsString(PyObject * v) {
 		#if PY_MAJOR_VERSION >= 3
 		return PyBytes_AS_STRING(v);
 		#else
@@ -194,37 +194,37 @@ public:
 		#endif
 	}
 
-	static int AddObject(PyObject * module, const char * name, PyObject * value) {
+	static inline int AddObject(PyObject * module, const char * name, PyObject * value) {
 		return PyModule_AddObject(module, name, value);
 	}
-	static int AddObject(const char * module, const char * name, PyObject * value) {
+	static inline int AddObject(const char * module, const char * name, PyObject * value) {
 		return AddObject(GetModule(module), name, value);
 	}
 
-	static int AddString(PyObject * module, const char * name, const char * value) {
+	static inline int AddString(PyObject * module, const char * name, const char * value) {
 		return PyModule_AddStringConstant(module, name, value);
 	}
-	static int AddString(PyObject * module, const char * name, const std::string value) {
+	static inline int AddString(PyObject * module, const char * name, const std::string value) {
 		return PyModule_AddStringConstant(module, name, value.c_str());
 	}
-	static int AddString(const char * module, const char * name, const char * value) {
+	static inline int AddString(const char * module, const char * name, const char * value) {
 		return AddString(GetModule(module), name, value);
 	}
-	static int AddString(const char * module, const char * name, const std::string & value) {
+	static inline int AddString(const char * module, const char * name, const std::string & value) {
 		return AddString(GetModule(module), name, value);
 	}
 
-	static int AddInt(PyObject * module, const char * name, long value) {
+	static inline int AddInt(PyObject * module, const char * name, long value) {
 		return PyModule_AddIntConstant(module, name, value);
 	}
-	static int AddInt(const char * module, const char * name, long value) {
+	static inline int AddInt(const char * module, const char * name, long value) {
 		return AddInt(GetModule(module), name, value);
 	}
 
-	static int RunString(const char* str) {
+	static inline int RunString(const char* str) {
 		return PyRun_SimpleString(str);
 	}
-	static int RunString(const std::string & str) {
+	static inline int RunString(const std::string & str) {
 		return RunString(str.c_str());
 	}
 }; // class App
