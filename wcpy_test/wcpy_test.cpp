@@ -34,9 +34,11 @@ WCPY_GENERATE_PYTHON3_MODULE(CosModule);
 
 int main(int argc, char* argv[])
 {
-	puts("start"); 
+	puts("start");
 	{
-		wcpy::App::SetProgramName(argv[0]);
+		// testing wcpy::Mem
+		auto programName = wcpy::App::SetProgramName(argv[0]);
+		std::wcout << Py_GetProgramName() << std::endl;
 
 		// testing wcpy::App
 		#if PY_MAJOR_VERSION >= 3

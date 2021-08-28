@@ -7,7 +7,7 @@
 
 namespace wcpy
 {
-	
+
 class Data {
 
 public:
@@ -57,6 +57,10 @@ public:
 		mObj = (Data::Type)obj;
 	}
 
+	Data::Type Get() {
+		return mObj;
+	}
+
 	// access
 	//! @brief *ptr
 	Data::Type operator*() const { return mObj; }
@@ -76,6 +80,54 @@ public:
 private:
 	Data::Type mObj{nullptr};
 }; // class Data
+
+#if PY_MAJOR_VERSION >= 3
+class Mem
+{
+public:
+	// aliases
+	using Type = void*;
+
+	// constructors
+	Mem(Mem::Type ptr) { Assign(ptr); };
+	~Mem() { Reset(); };
+
+	// copy
+	Mem(const Mem&) = delete;
+	Mem& operator=(const Mem&) = delete;
+
+	// move
+	Mem(Mem&& mem) {
+		this->mPtr = mem.mPtr;
+		mem.mPtr = nullptr;
+	};
+	Mem& operator=(Mem& mem) {
+		Reset();
+		this->mPtr = mem.mPtr;
+		mem.mPtr = nullptr;
+	};
+
+	// methods
+	void Reset() {
+		if (mPtr) {
+			PyMem_RawFree(mPtr);
+			mPtr = nullptr;
+		}
+	}
+
+	void Assign(Mem::Type obj) {
+		Reset();
+		mPtr = obj;
+	}
+
+	Mem::Type Get() {
+		return mPtr;
+	}
+
+private:
+	Mem::Type mPtr{nullptr};
+};
+#endif
 
 class App
 {
@@ -97,13 +149,15 @@ public:
 	}
 
 #if PY_MAJOR_VERSION >= 3
-	static void SetProgramName(char * name) {
-		auto programName = Py_DecodeLocale(name, nullptr);
-		Py_SetProgramName(programName);
+	static wcpy::Mem SetProgramName(char * name) {
+		auto v = Py_DecodeLocale(name, nullptr);
+		Py_SetProgramName(v);
+		return v;
 	}
 #else
-	static void SetProgramName(char * name) {
+	static bool SetProgramName(char * name) {
 		Py_SetProgramName(name);
+		return (name);
 	}
 #endif
 
@@ -136,7 +190,7 @@ public:
 		#if PY_MAJOR_VERSION >= 3
 		return PyBytes_AS_STRING(v);
 		#else
-		return PyBytes_AS_STRING(v);
+		return PyString_AS_STRING(v);
 		#endif
 	}
 
