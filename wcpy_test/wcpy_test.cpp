@@ -60,6 +60,13 @@ int main(int argc, char* argv[])
 		wcpy::Data d2 = std::move(d);
 		wcpy::Data d3;
 		d3.Assign(PyTuple_New(3));
+
+		// test modules
+		app.AddInt("CosModule", "IntInt", 123);
+		app.RunString("print('IntInt is:', CosModule.IntInt)");
+		auto m = app.GetModule("CosModule");
+		app.AddInt("CosModule", "IntInt2", 456);
+		app.RunString("print('IntInt2 is:', CosModule.IntInt2)");
 	}
 	puts("stop");
 }

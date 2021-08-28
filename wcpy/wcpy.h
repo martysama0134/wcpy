@@ -161,10 +161,10 @@ public:
 	}
 #endif
 
-	static inline PyObject * GetModule(const char * str) {
+	static inline wcpy::Data GetModule(const char * str) {
 		return PyImport_ImportModule(str);
 	}
-	static inline PyObject * GetModule(const std::string & str) {
+	static inline wcpy::Data GetModule(const std::string & str) {
 		return GetModule(str.c_str());
 	}
 
