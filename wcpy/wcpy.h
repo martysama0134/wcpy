@@ -96,6 +96,17 @@ public:
 		Py_Finalize();
 	}
 
+#if PY_MAJOR_VERSION >= 3
+	static void SetProgramName(char * name) {
+		auto programName = Py_DecodeLocale(name, nullptr);
+		Py_SetProgramName(programName);
+	}
+#else
+	static void SetProgramName(char * name) {
+		Py_SetProgramName(name);
+	}
+#endif
+
 	static PyObject * GetModule(const char * str) {
 		return PyImport_ImportModule(str);
 	}

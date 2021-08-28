@@ -32,10 +32,12 @@ static PyMethodDef CosModuleMethods[] =
 
 WCPY_GENERATE_PYTHON3_MODULE(CosModule);
 
-int main()
+int main(int argc, char* argv[])
 {
 	puts("start"); 
 	{
+		wcpy::App::SetProgramName(argv[0]);
+
 		// testing wcpy::App
 		#if PY_MAJOR_VERSION >= 3
 		auto app = wcpy::App(false); //should not be initialized if there are custom modules to load
@@ -47,8 +49,9 @@ int main()
 		WCPY_INIT_PYTHON_MODULE(CosModule); //app.InitModule("CosModule", CosModuleMethods);
 		app.RunString("import CosModule\nprint(CosModule.CosFunc(1.0))");
 		#endif
-		app.RunString("from time import time,ctime\n"
-			"print('Today is', ctime(time()))\n");
+
+		app.RunString("from time import time,ctime");
+		app.RunString("print('Today is', ctime(time()))");
 
 		// testing wcpy::Data
 		wcpy::Data d = PyTuple_New(3);
