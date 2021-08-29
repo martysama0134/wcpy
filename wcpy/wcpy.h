@@ -180,7 +180,7 @@ public:
 
 	static inline bool StringCheck(PyObject * v) {
 		#if PY_MAJOR_VERSION >= 3
-		return PyBytes_Check(v);
+		return PyUnicode_Check(v);
 		#else
 		return PyString_Check(v);
 		#endif
@@ -188,7 +188,7 @@ public:
 
 	static inline char * StringAsString(PyObject * v) {
 		#if PY_MAJOR_VERSION >= 3
-		return PyBytes_AS_STRING(v);
+		return PyBytes_AsString(PyUnicode_AsUTF8String(v));
 		#else
 		return PyString_AS_STRING(v);
 		#endif
