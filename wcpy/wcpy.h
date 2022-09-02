@@ -81,6 +81,15 @@ private:
 	Data::Type mObj{nullptr};
 }; // class Data
 
+class DataNo : public Data
+{
+	// destructor
+	virtual ~DataNo()
+	{
+		//Reset();
+	}
+};
+
 #if PY_MAJOR_VERSION >= 3
 class Mem
 {
@@ -127,6 +136,15 @@ public:
 private:
 	Mem::Type mPtr{nullptr};
 };
+
+class MemNo : public Mem
+{
+	// destructor
+	virtual ~MemNo()
+	{
+		//Reset();
+	}
+};
 #endif
 
 class App
@@ -162,7 +180,8 @@ public:
 #endif
 
 	static inline wcpy::Data GetModule(const char * str) {
-		return PyImport_ImportModule(str);
+		auto objStr = PyUnicode_FromString(str);
+		return PyImport_Import(objStr);
 	}
 	static inline wcpy::Data GetModule(const std::string & str) {
 		return GetModule(str.c_str());
