@@ -159,6 +159,9 @@ public:
 		Clear();
 	}
 
+	static inline bool IsInit() {
+		return Py_IsInitialized();
+	}
 	static inline void Init() {
 		Py_Initialize();
 	}
